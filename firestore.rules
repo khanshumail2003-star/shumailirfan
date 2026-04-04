@@ -1,0 +1,70 @@
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: projects
+// Document ID: auto-generated
+// Fields:
+//   - title: string (required)
+//   - description: string (required)
+//   - imageUrl: string (required)
+//   - category: string (required)
+//   - createdAt: timestamp (optional)
+//
+// Collection: messages
+// Document ID: auto-generated
+// Fields:
+//   - name: string (required)
+//   - email: string (required, email format)
+//   - subject: string (optional)
+//   - message: string (required)
+//   - createdAt: timestamp (optional)
+//
+// ===============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidProject(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() < 100 &&
+             data.description is string && data.description.size() > 0 && data.description.size() < 1000 &&
+             data.imageUrl is string && data.imageUrl.size() > 0 &&
+             data.category is string && data.category.size() > 0;
+    }
+
+    function isValidMessage(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.email is string && isValidEmail(data.email) &&
+             data.message is string && data.message.size() > 0 && data.message.size() < 2000;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == "khanshumail2003@gmail.com" && request.auth.token.email_verified == true
+      );
+    }
+
+    // Projects: Anyone can read, only admin can write
+    match /projects/{projectId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidProject(request.resource.data);
+    }
+
+    // Messages: Anyone can create, only admin can read/delete
+    match /messages/{messageId} {
+      allow create: if isValidMessage(request.resource.data);
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "Graphic design project",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Project title" },
+        "description": { "type": "string", "description": "Project description" },
+        "imageUrl": { "type": "string", "description": "Image URL" },
+        "category": { "type": "string", "description": "Category (e.g., Logo, Social Media)" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "description", "imageUrl", "category"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Contact form message",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "message"]
+    }
+  },
+  "firestore": {
+    "/projects": {
+      "schema": "Project",
+      "description": "Public projects"
+    },
+    "/messages": {
+      "schema": "Message",
+      "description": "Contact form messages"
+    }
+  }
+}
