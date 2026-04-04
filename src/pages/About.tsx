@@ -1,45 +1,47 @@
 import { motion } from 'motion/react';
-import { BookOpen, GraduationCap, Code, Briefcase, Heart, User } from 'lucide-react';
+import { BookOpen, GraduationCap, Code, Briefcase, Heart, User, Palette, Star, ShieldCheck, Zap } from 'lucide-react';
 
 const education = [
   {
-    title: 'Graphic Designing',
+    title: 'Professional Graphic Designing',
     institution: 'Promotezz International',
     period: '2026',
-    description: 'Completed a 3-month intensive course covering logo design, social media design, and creative concepts.',
+    description: 'Mastered advanced design principles, including logo creation, brand identity, and high-impact social media marketing visuals.',
     icon: PaletteIcon,
   },
   {
     title: 'Hafiz-e-Quran',
     institution: 'Quranic Studies',
     period: '2012 - 2018',
-    description: 'Completed Quranic studies, developing discipline, focus, and dedication.',
+    description: 'Successfully completed the memorization of the Holy Quran, instilling deep values of discipline, focus, and spiritual integrity.',
     icon: BookOpen,
   },
   {
-    title: 'Matriculation',
+    title: 'Matriculation (Science)',
     institution: 'Alyahan Grammar High School',
     period: '2025',
-    description: 'Strong interest in Computer and Mathematics, supporting technical skills in design.',
+    description: 'Focused on Computer Science and Mathematics, providing a strong analytical foundation for technical design work.',
     icon: GraduationCap,
   },
   {
-    title: 'Office Management',
+    title: 'Office Management Certification',
     institution: 'Vital College',
     period: '2025',
-    description: 'Gained knowledge of office work, management, and basic computer skills.',
+    description: 'Expertise in professional office workflows, digital management, and advanced computer operations.',
     icon: Briefcase,
   },
 ];
 
 const skills = [
-  { name: 'Adobe Photoshop', level: 90 },
-  { name: 'Adobe Illustrator', level: 85 },
-  { name: 'Logo Design', level: 95 },
-  { name: 'Social Media Content', level: 92 },
-  { name: 'Office Management', level: 88 },
-  { name: 'Visual Storytelling', level: 85 },
+  { name: 'Logo & Brand Identity', level: 95 },
+  { name: 'Social Media Marketing Design', level: 92 },
+  { name: 'Adobe Creative Suite', level: 90 },
+  { name: 'Visual Storytelling', level: 88 },
+  { name: 'Office Management', level: 90 },
+  { name: 'UI/UX Design Concepts', level: 85 },
 ];
+
+const profileImageUrl = "https://vui.unsplash.com/resize?height=256&quality=60&type=auto&url=https%3A%2F%2Fsearched-images.s3.us-west-2.amazonaws.com%2Fc28ff94d-4680-4062-8a52-983e649ecc5a%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQ4GRIA4QTG2PSHUB%252F20260404%252Fus-west-2%252Fs3%252Faws4_request%26X-Amz-Date%3D20260404T195739Z%26X-Amz-Expires%3D86400%26X-Amz-SignedHeaders%3Dhost%26X-Amz-Signature%3D3229c7b1bf4e80bed0a17dbe98a9520285736f931b7d9e67b209149db1d5f31c&sign=EdZuP-8f-ldGiyAPDMnEMHQZ5zOi9Rztl8vvYWx9nkQ";
 
 function PaletteIcon(props: any) {
   return (
@@ -66,32 +68,47 @@ function PaletteIcon(props: any) {
 
 export default function About() {
   return (
-    <div className="pt-24 pb-20">
+    <div className="pt-32 pb-20 bg-black text-white bg-dark-gradient min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Intro Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-32">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             className="space-y-8"
           >
-            <div className="inline-flex items-center space-x-2 text-violet-600 font-bold uppercase tracking-widest text-sm">
+            <div className="inline-flex items-center space-x-2 text-violet-400 font-bold uppercase tracking-widest text-sm bg-violet-500/10 px-4 py-2 rounded-full border border-violet-500/20">
               <User size={18} />
-              <span>About Me</span>
+              <span>The Designer's Story</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-              A Journey of Discipline, <span className="text-violet-600">Faith</span>, and Creativity
+            <h1 className="text-5xl md:text-7xl font-black text-white leading-tight tracking-tight">
+              Discipline, <span className="text-gradient">Faith</span>, and Creative Mastery
             </h1>
-            <div className="prose prose-lg text-slate-600 max-w-none space-y-6">
+            <div className="prose prose-invert prose-lg text-slate-400 max-w-none space-y-6">
               <p>
-                Hello! I’m Hafiz Muhammad Shumail, a passionate graphic designer with a strong interest in visual storytelling. I specialize in creating creative and impactful designs, including logos, business cards, and social media content.
+                I am Hafiz Muhammad Shumail, a professional graphic designer dedicated to the art of visual storytelling. My expertise lies in crafting high-impact logos, strategic brand identities, and engaging social media content that drives real-world results.
               </p>
               <p>
-                I am a hardworking and struggling person. I faced health problems and difficulties since childhood, but I never gave up. I am a Hafiz of Quran and along with education I am also looking for skills, such as graphic designing and office management.
+                My journey is defined by resilience. Despite facing health challenges since childhood, I have embraced a path of continuous growth and excellence. As a Hafiz-e-Quran, I carry the values of integrity, patience, and unwavering focus into every design project I undertake.
               </p>
               <p>
-                I am a simple, helpful and family oriented person who wants to make a name for himself through his hard work. My journey as a Hafiz-e-Quran (2012-2018) helped me develop discipline, focus, and dedication in my life.
+                I am a hardworking professional who believes in the power of visual communication to transform businesses. My goal is to help you make a legendary name for yourself through creative excellence and technical precision.
               </p>
+            </div>
+            
+            <div className="flex flex-wrap gap-6 pt-4">
+              <div className="flex items-center space-x-3">
+                <ShieldCheck className="text-violet-500" size={24} />
+                <span className="font-bold text-sm text-slate-300">Trusted Professional</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Zap className="text-amber-500" size={24} />
+                <span className="font-bold text-sm text-slate-300">Fast Turnaround</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Star className="text-violet-500" size={24} />
+                <span className="font-bold text-sm text-slate-300">Premium Quality</span>
+              </div>
             </div>
           </motion.div>
 
@@ -100,34 +117,35 @@ export default function About() {
             animate={{ opacity: 1, scale: 1 }}
             className="relative"
           >
-            <div className="aspect-[4/5] bg-slate-100 rounded-[3rem] overflow-hidden shadow-2xl relative z-10">
+            <div className="absolute -inset-4 bg-gradient-to-br from-violet-600 to-amber-600 rounded-[4rem] blur-2xl opacity-20" />
+            <div className="aspect-[4/5] bg-slate-900 rounded-[4rem] overflow-hidden shadow-2xl relative z-10 border border-slate-800">
               <img
-                src="https://picsum.photos/seed/shumail/800/1000"
-                alt="About Shumail"
-                className="w-full h-full object-cover"
+                src={profileImageUrl}
+                alt="Hafiz Muhammad Shumail"
+                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                 referrerPolicy="no-referrer"
               />
             </div>
-            <div className="absolute -bottom-10 -left-10 bg-white p-8 rounded-3xl shadow-xl z-20 max-w-xs border border-slate-100">
-              <div className="flex items-center space-x-4 mb-4 text-violet-600">
+            <div className="absolute -bottom-10 -left-10 bg-slate-900/90 backdrop-blur-xl p-10 rounded-[2.5rem] shadow-2xl z-20 max-w-xs border border-slate-800">
+              <div className="flex items-center space-x-4 mb-4 text-violet-400">
                 <Heart className="fill-current" />
-                <span className="font-bold text-slate-900">My Values</span>
+                <span className="font-bold text-white">Core Values</span>
               </div>
-              <p className="text-sm text-slate-600 italic">
-                "I believe in hard work, honesty, and helping others. My goal is to make a positive impact through my creative skills."
+              <p className="text-slate-400 italic leading-relaxed">
+                "I believe in the fusion of hard work, spiritual honesty, and creative innovation to deliver designs that resonate."
               </p>
             </div>
           </motion.div>
         </div>
 
         {/* Education Timeline */}
-        <section className="mb-24">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Education & Certifications</h2>
-            <div className="w-20 h-1.5 bg-violet-600 mx-auto rounded-full" />
+        <section className="mb-32">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl font-black text-white mb-6">Academic & Professional Journey</h2>
+            <div className="w-24 h-2 bg-gradient-to-r from-violet-600 to-amber-600 mx-auto rounded-full" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {education.map((item, idx) => (
               <motion.div
                 key={item.title}
@@ -135,18 +153,18 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex items-start space-x-6"
+                className="bg-slate-900/40 backdrop-blur-sm p-10 rounded-[3rem] border border-slate-800 hover:border-violet-500/30 transition-all flex items-start space-x-8 group"
               >
-                <div className="w-14 h-14 bg-violet-50 rounded-2xl flex items-center justify-center text-violet-600 shrink-0">
-                  <item.icon size={28} />
+                <div className="w-16 h-16 bg-violet-500/10 rounded-2xl flex items-center justify-center text-violet-400 shrink-0 group-hover:bg-violet-600 group-hover:text-white transition-all duration-500">
+                  <item.icon size={32} />
                 </div>
                 <div>
-                  <span className="text-xs font-bold text-violet-600 uppercase tracking-wider bg-violet-50 px-2 py-1 rounded">
+                  <span className="text-xs font-black text-violet-400 uppercase tracking-[0.2em] bg-violet-500/10 px-3 py-1.5 rounded-full border border-violet-500/20">
                     {item.period}
                   </span>
-                  <h3 className="text-xl font-bold text-slate-900 mt-3">{item.title}</h3>
-                  <p className="text-sm font-semibold text-slate-500 mb-3">{item.institution}</p>
-                  <p className="text-slate-600 text-sm leading-relaxed">{item.description}</p>
+                  <h3 className="text-2xl font-bold text-white mt-4">{item.title}</h3>
+                  <p className="text-sm font-bold text-slate-500 mb-4 uppercase tracking-wider">{item.institution}</p>
+                  <p className="text-slate-400 leading-relaxed">{item.description}</p>
                 </div>
               </motion.div>
             ))}
@@ -154,45 +172,45 @@ export default function About() {
         </section>
 
         {/* Skills Section */}
-        <section className="bg-slate-900 rounded-[3rem] p-12 md:p-20 text-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-violet-500/10 rounded-full -mr-48 -mt-48 blur-3xl" />
+        <section className="bg-slate-900/50 backdrop-blur-xl rounded-[4rem] p-12 md:p-24 text-white overflow-hidden relative border border-slate-800 shadow-3xl">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-violet-600/5 rounded-full -mr-48 -mt-48 blur-[120px]" />
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-8">Technical Expertise</h2>
-              <p className="text-slate-400 mb-12 text-lg leading-relaxed">
-                Over the years, I've honed my skills in various design tools and management techniques to deliver professional results.
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+            <div className="space-y-8">
+              <h2 className="text-5xl font-black mb-8 leading-tight">Technical <span className="text-gradient">Mastery</span> & Expertise</h2>
+              <p className="text-xl text-slate-400 leading-relaxed">
+                I leverage industry-leading tools and strategic methodologies to ensure every design is not only beautiful but also functional and goal-oriented.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-2xl border border-white/10">
-                  <div className="w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center text-violet-400">
-                    <Code size={20} />
+                <div className="flex items-center space-x-4 p-6 bg-slate-800/50 rounded-3xl border border-slate-700 hover:border-violet-500/30 transition-colors">
+                  <div className="w-12 h-12 bg-violet-500/20 rounded-xl flex items-center justify-center text-violet-400">
+                    <Code size={24} />
                   </div>
-                  <span className="font-medium">Office Management</span>
+                  <span className="font-bold text-lg">Digital Strategy</span>
                 </div>
-                <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-2xl border border-white/10">
-                  <div className="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center text-amber-400">
-                    <Layout size={20} />
+                <div className="flex items-center space-x-4 p-6 bg-slate-800/50 rounded-3xl border border-slate-700 hover:border-amber-500/30 transition-colors">
+                  <div className="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-400">
+                    <Palette size={24} />
                   </div>
-                  <span className="font-medium">UI/UX Concepts</span>
+                  <span className="font-bold text-lg">Brand Identity</span>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-10">
               {skills.map((skill) => (
-                <div key={skill.name} className="space-y-2">
-                  <div className="flex justify-between text-sm font-medium">
-                    <span>{skill.name}</span>
+                <div key={skill.name} className="space-y-3">
+                  <div className="flex justify-between text-lg font-bold">
+                    <span className="text-slate-200">{skill.name}</span>
                     <span className="text-violet-400">{skill.level}%</span>
                   </div>
-                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${skill.level}%` }}
-                      transition={{ duration: 1, ease: "easeOut" }}
+                      transition={{ duration: 1.5, ease: "easeOut" }}
                       viewport={{ once: true }}
-                      className="h-full bg-violet-500"
+                      className="h-full bg-gradient-to-r from-violet-600 to-amber-600 shadow-[0_0_20px_rgba(139,92,246,0.3)]"
                     />
                   </div>
                 </div>

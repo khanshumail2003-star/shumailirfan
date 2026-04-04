@@ -14,23 +14,33 @@
   }
   
   body {
-    @apply text-slate-900 antialiased bg-white;
+    @apply text-slate-100 antialiased bg-black;
   }
 }
 
 .prose p {
-  @apply mb-4;
+  @apply mb-4 text-slate-300;
 }
 
 .prose h1, .prose h2, .prose h3 {
-  @apply font-bold text-gray-900 mt-8 mb-4;
+  @apply font-bold text-white mt-8 mb-4;
 }
 
 .prose ul {
-  @apply list-disc pl-6 mb-4;
+  @apply list-disc pl-6 mb-4 text-slate-300;
 }
 
 .prose li {
   @apply mb-2;
+}
+
+.bg-dark-gradient {
+  background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.15), transparent),
+              radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.1), transparent),
+              black;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-amber-400;
 }
 

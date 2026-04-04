@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, Loader2, MessageSquare } from 'lucide-react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -34,23 +34,31 @@ export default function Contact() {
   };
 
   return (
-    <div className="pt-24 pb-20 min-h-screen bg-slate-50">
+    <div className="pt-32 pb-20 min-h-screen bg-black text-white bg-dark-gradient">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-20">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center space-x-2 text-violet-400 font-bold uppercase tracking-widest text-sm bg-violet-500/10 px-4 py-2 rounded-full border border-violet-500/20 mb-8"
+          >
+            <MessageSquare size={18} />
+            <span>Let's Collaborate</span>
+          </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-extrabold text-slate-900 mb-6"
+            className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tight"
           >
-            Get In <span className="text-violet-600">Touch</span>
+            Start a <span className="text-gradient">Legendary</span> Project
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-lg text-slate-600 max-w-2xl mx-auto"
+            className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed"
           >
-            Have a project in mind or just want to say hello? Feel free to reach out. I'm always open to new opportunities and collaborations.
+            Ready to elevate your brand? Whether you need a strategic logo, a complete visual identity, or high-impact social media content, I'm here to bring your vision to life.
           </motion.p>
         </div>
 
@@ -60,14 +68,14 @@ export default function Contact() {
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex items-start space-x-6"
+              className="bg-slate-900/40 backdrop-blur-xl p-10 rounded-[2.5rem] border border-slate-800 flex items-start space-x-8 group hover:border-violet-500/30 transition-all"
             >
-              <div className="w-12 h-12 bg-violet-50 rounded-2xl flex items-center justify-center text-violet-600 shrink-0">
-                <Mail size={24} />
+              <div className="w-16 h-16 bg-violet-500/10 rounded-2xl flex items-center justify-center text-violet-400 shrink-0 group-hover:bg-violet-600 group-hover:text-white transition-all duration-500">
+                <Mail size={32} />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Email Me</h3>
-                <p className="text-slate-600 text-sm break-all">hafizmuhammadshumailirfan@gmail.com</p>
+                <h3 className="text-xl font-bold text-white mb-2">Email Me</h3>
+                <p className="text-slate-400 text-sm break-all font-medium">hafizmuhammadshumailirfan@gmail.com</p>
               </div>
             </motion.div>
 
@@ -75,14 +83,14 @@ export default function Contact() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex items-start space-x-6"
+              className="bg-slate-900/40 backdrop-blur-xl p-10 rounded-[2.5rem] border border-slate-800 flex items-start space-x-8 group hover:border-green-500/30 transition-all"
             >
-              <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 shrink-0">
-                <Phone size={24} />
+              <div className="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-400 shrink-0 group-hover:bg-green-600 group-hover:text-white transition-all duration-500">
+                <Phone size={32} />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Call / WhatsApp</h3>
-                <p className="text-slate-600 text-sm">+92 315 5431571</p>
+                <h3 className="text-xl font-bold text-white mb-2">WhatsApp</h3>
+                <p className="text-slate-400 text-sm font-medium">+92 315 5431571</p>
               </div>
             </motion.div>
 
@@ -90,14 +98,14 @@ export default function Contact() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex items-start space-x-6"
+              className="bg-slate-900/40 backdrop-blur-xl p-10 rounded-[2.5rem] border border-slate-800 flex items-start space-x-8 group hover:border-amber-500/30 transition-all"
             >
-              <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 shrink-0">
-                <MapPin size={24} />
+              <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-400 shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-all duration-500">
+                <MapPin size={32} />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Location</h3>
-                <p className="text-slate-600 text-sm">Rahim Yar Khan, Pakistan</p>
+                <h3 className="text-xl font-bold text-white mb-2">Location</h3>
+                <p className="text-slate-400 text-sm font-medium">Rahim Yar Khan, Pakistan</p>
               </div>
             </motion.div>
           </div>
@@ -106,75 +114,75 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="lg:col-span-2 bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl shadow-violet-100/50 border border-slate-100"
+            className="lg:col-span-2 bg-slate-900/40 backdrop-blur-xl p-10 md:p-16 rounded-[4rem] border border-slate-800 shadow-3xl"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-bold text-slate-700 ml-1">Your Name</label>
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <label htmlFor="name" className="text-sm font-black text-slate-300 uppercase tracking-widest ml-1">Your Name</label>
                   <input
                     id="name"
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-8 py-5 bg-slate-800/50 border border-slate-700 rounded-3xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all text-white placeholder-slate-600 font-medium"
                     placeholder="John Doe"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
+                <div className="space-y-3">
+                  <label htmlFor="email" className="text-sm font-black text-slate-300 uppercase tracking-widest ml-1">Email Address</label>
                   <input
                     id="email"
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-8 py-5 bg-slate-800/50 border border-slate-700 rounded-3xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all text-white placeholder-slate-600 font-medium"
                     placeholder="john@example.com"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="subject" className="text-sm font-bold text-slate-700 ml-1">Subject</label>
+              <div className="space-y-3">
+                <label htmlFor="subject" className="text-sm font-black text-slate-300 uppercase tracking-widest ml-1">Subject</label>
                 <input
                   id="subject"
                   type="text"
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-8 py-5 bg-slate-800/50 border border-slate-700 rounded-3xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all text-white placeholder-slate-600 font-medium"
                   placeholder="How can I help you?"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="message" className="text-sm font-bold text-slate-700 ml-1">Message</label>
+              <div className="space-y-3">
+                <label htmlFor="message" className="text-sm font-black text-slate-300 uppercase tracking-widest ml-1">Message</label>
                 <textarea
                   id="message"
                   required
                   rows={6}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all resize-none"
-                  placeholder="Tell me about your project..."
+                  className="w-full px-8 py-5 bg-slate-800/50 border border-slate-700 rounded-3xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all resize-none text-white placeholder-slate-600 font-medium"
+                  placeholder="Tell me about your project goals..."
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full py-5 bg-violet-600 text-white rounded-2xl font-bold text-xl hover:bg-violet-700 transition-all shadow-lg hover:shadow-violet-200 flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full py-6 bg-gradient-to-r from-violet-600 to-amber-600 text-white rounded-3xl font-black text-xl hover:scale-[1.02] transition-all shadow-2xl shadow-violet-600/20 flex items-center justify-center space-x-3 disabled:opacity-70 disabled:cursor-not-allowed group"
               >
                 {status === 'loading' ? (
                   <>
-                    <Loader2 className="animate-spin" size={24} />
-                    <span>Sending...</span>
+                    <Loader2 className="animate-spin" size={28} />
+                    <span className="uppercase tracking-widest">Sending...</span>
                   </>
                 ) : (
                   <>
-                    <Send size={24} />
-                    <span>Send Message</span>
+                    <Send size={28} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    <span className="uppercase tracking-widest">Send Message</span>
                   </>
                 )}
               </button>
@@ -185,10 +193,10 @@ export default function Contact() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center space-x-2 text-green-600 bg-green-50 p-4 rounded-xl border border-green-100"
+                  className="flex items-center space-x-3 text-green-400 bg-green-500/10 p-6 rounded-3xl border border-green-500/20"
                 >
-                  <CheckCircle2 size={20} />
-                  <span className="font-medium">Message sent successfully! I'll get back to you soon.</span>
+                  <CheckCircle2 size={24} />
+                  <span className="font-bold">Message sent successfully! I'll get back to you soon.</span>
                 </motion.div>
               )}
 
@@ -196,10 +204,10 @@ export default function Contact() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center space-x-2 text-red-600 bg-red-50 p-4 rounded-xl border border-red-100"
+                  className="flex items-center space-x-3 text-red-400 bg-red-500/10 p-6 rounded-3xl border border-red-500/20"
                 >
-                  <AlertCircle size={20} />
-                  <span className="font-medium">{errorMessage}</span>
+                  <AlertCircle size={24} />
+                  <span className="font-bold">{errorMessage}</span>
                 </motion.div>
               )}
             </form>
