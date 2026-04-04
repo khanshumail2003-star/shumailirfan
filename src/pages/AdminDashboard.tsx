@@ -72,13 +72,17 @@ export default function AdminDashboard() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !ADMIN_EMAILS.includes(user.email || '')) return;
+    if (!user || !ADMIN_EMAILS.includes(user.email || '')) {
+      alert("Unauthorized access");
+      return;
+    }
     if (!formData.imageUrl) {
       alert("Please upload an image");
       return;
     }
 
     setIsSubmitting(true);
+    setStatus('idle');
     try {
       await addDoc(collection(db, 'projects'), {
         ...formData,
@@ -88,10 +92,11 @@ export default function AdminDashboard() {
       setImagePreview(null);
       setStatus('success');
       fetchProjects();
-      setTimeout(() => setStatus('idle'), 3000);
-    } catch (error) {
+      setTimeout(() => setStatus('idle'), 5000);
+    } catch (error: any) {
       console.error("Error adding project:", error);
       setStatus('error');
+      alert(`Failed to add project: ${error.message || 'Unknown error'}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -151,8 +156,8 @@ export default function AdminDashboard() {
               <LayoutDashboard size={24} />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-              <p className="text-slate-400 text-sm">Welcome back, Shumail Irfan</p>
+              <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard</h1>
+              <p className="text-slate-300 text-sm font-medium">Welcome back, <span className="text-violet-400">Shumail Irfan</span></p>
             </div>
           </div>
           <button
@@ -172,13 +177,13 @@ export default function AdminDashboard() {
               animate={{ opacity: 1, x: 0 }}
               className="bg-slate-900/50 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl border border-slate-800 sticky top-28"
             >
-              <h2 className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+              <h2 className="text-xl font-bold text-white mb-6 flex items-center space-x-2 tracking-tight">
                 <Plus size={20} className="text-violet-400" />
-                <span>Add New Project</span>
+                <span>Add New <span className="text-violet-400">Project</span></span>
               </h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Project Title</label>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Project Title</label>
                   <div className="relative">
                     <Type className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <input
@@ -186,20 +191,20 @@ export default function AdminDashboard() {
                       type="text"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all placeholder:text-slate-600 font-medium"
                       placeholder="e.g. Modern Brand Identity"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Category</label>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Category</label>
                   <div className="relative">
                     <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <select
                       value={formData.category}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all appearance-none"
+                      className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all appearance-none font-medium"
                     >
                       <option value="Logo">Logo Design</option>
                       <option value="Social Media">Social Media</option>
@@ -210,43 +215,45 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Project Image</label>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Project Image</label>
                   <div className="space-y-4">
                     {!imagePreview ? (
-                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-700 rounded-xl cursor-pointer hover:border-violet-500/50 hover:bg-violet-500/5 transition-all">
+                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-700 rounded-xl cursor-pointer hover:border-violet-500/50 hover:bg-violet-500/5 transition-all group/upload">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <Upload className="w-8 h-8 text-slate-500 mb-2" />
-                          <p className="text-sm text-slate-500">Click to upload image</p>
+                          <Upload className="w-8 h-8 text-slate-500 mb-2 group-hover/upload:text-violet-400 transition-colors" />
+                          <p className="text-sm text-slate-400 font-medium">Click to upload image</p>
                           <p className="text-xs text-slate-600 mt-1">Max size: 1MB</p>
                         </div>
                         <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                       </label>
                     ) : (
-                      <div className="relative rounded-xl overflow-hidden aspect-video border border-slate-700">
+                      <div className="relative rounded-xl overflow-hidden aspect-video border border-slate-700 group/preview">
                         <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setImagePreview(null);
-                            setFormData(prev => ({ ...prev, imageUrl: '' }));
-                          }}
-                          className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-lg"
-                        >
-                          <X size={16} />
-                        </button>
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center justify-center">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setImagePreview(null);
+                              setFormData(prev => ({ ...prev, imageUrl: '' }));
+                            }}
+                            className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-lg"
+                          >
+                            <X size={20} />
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Description</label>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Description</label>
                   <textarea
                     required
                     rows={4}
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all resize-none"
+                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all resize-none placeholder:text-slate-600 font-medium"
                     placeholder="Tell the story behind this design..."
                   />
                 </div>
@@ -299,8 +306,8 @@ export default function AdminDashboard() {
                     <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest bg-violet-500/10 px-2 py-1 rounded border border-violet-500/20">
                       {project.category}
                     </span>
-                    <h3 className="text-lg font-bold text-white mt-2">{project.title}</h3>
-                    <p className="text-slate-400 text-sm mt-2 line-clamp-2">{project.description}</p>
+                    <h3 className="text-lg font-bold text-white mt-2 group-hover:text-violet-400 transition-colors">{project.title}</h3>
+                    <p className="text-slate-300 text-sm mt-2 line-clamp-2 font-medium">{project.description}</p>
                   </div>
                 </motion.div>
               ))}

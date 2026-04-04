@@ -74,9 +74,9 @@ export default function Home() {
                 <span>Top-Rated Graphic Designer</span>
               </div>
               <h1 className="text-6xl sm:text-8xl font-black text-white leading-[1.1] tracking-tight">
-                Elevate Your <span className="text-gradient">Brand</span> With Visual Mastery
+                Elevate Your <span className="text-gradient">Brand</span> With <span className="text-violet-400">Visual Mastery</span>
               </h1>
-              <p className="text-xl text-slate-400 max-w-lg leading-relaxed">
+              <p className="text-xl text-slate-300 max-w-lg leading-relaxed font-medium">
                 I am Hafiz Muhammad Shumail, a professional graphic designer specializing in high-end visual identities and strategic brand storytelling.
               </p>
               
@@ -173,8 +173,8 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-violet-600/5 rounded-full blur-[100px]" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-24">
-            <h2 className="text-5xl font-black text-white mb-6">Expert Design Services</h2>
-            <p className="text-xl text-slate-400">
+            <h2 className="text-5xl font-black text-white mb-6 tracking-tight">Expert <span className="text-violet-400">Design</span> Services</h2>
+            <p className="text-xl text-slate-300 font-medium">
               I provide high-end graphic design solutions tailored to elevate your brand's visual presence in a competitive market.
             </p>
           </div>
@@ -192,8 +192,8 @@ export default function Home() {
                 <div className="w-16 h-16 bg-violet-500/10 rounded-2xl flex items-center justify-center text-violet-400 mb-8 group-hover:bg-violet-600 group-hover:text-white transition-all duration-500">
                   <service.icon size={32} />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">{service.title}</h3>
-                <p className="text-slate-400 leading-relaxed">{service.description}</p>
+                <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-violet-400 transition-colors">{service.title}</h3>
+                <p className="text-slate-300 leading-relaxed font-medium">{service.description}</p>
               </motion.div>
             ))}
           </div>
@@ -224,8 +224,8 @@ export default function Home() {
               viewport={{ once: true }}
               className="space-y-8"
             >
-              <h2 className="text-5xl font-black text-white">The Designer Behind The Craft</h2>
-              <p className="text-xl text-slate-400 leading-relaxed">
+              <h2 className="text-5xl font-black text-white tracking-tight">The <span className="text-violet-400">Designer</span> Behind The Craft</h2>
+              <p className="text-xl text-slate-300 leading-relaxed font-medium">
                 As a Hafiz-e-Quran and a dedicated designer, I blend spiritual discipline with technical precision. My work is built on the pillars of integrity, excellence, and creative innovation.
               </p>
               <div className="space-y-6">
@@ -239,8 +239,8 @@ export default function Home() {
                       <CheckCircle2 size={18} />
                     </div>
                     <div>
-                      <h4 className="text-xl font-bold text-white">{item.title}</h4>
-                      <p className="text-slate-400">{item.desc}</p>
+                      <h4 className="text-xl font-bold text-white group-hover:text-amber-400 transition-colors">{item.title}</h4>
+                      <p className="text-slate-300 font-medium">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -265,10 +265,10 @@ export default function Home() {
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-600/10 rounded-full -ml-48 -mb-48 blur-[100px]" />
             
             <div className="relative z-10 max-w-3xl mx-auto space-y-10">
-              <h2 className="text-5xl md:text-7xl font-black text-white leading-tight">
+              <h2 className="text-5xl md:text-7xl font-black text-white leading-tight tracking-tighter">
                 Ready to <span className="text-gradient">Transform</span> Your Brand?
               </h2>
-              <p className="text-2xl text-slate-400">
+              <p className="text-2xl text-slate-300 font-medium">
                 Let's collaborate on your next big project and create something truly legendary.
               </p>
               <div className="pt-6">

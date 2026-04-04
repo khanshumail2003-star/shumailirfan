@@ -57,7 +57,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                 <h2 className="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight">
                   {project.title}
                 </h2>
-                <div className="prose prose-invert prose-lg max-w-none text-slate-400 leading-relaxed font-medium">
+                <div className="prose prose-invert prose-lg max-w-none text-slate-300 leading-relaxed font-medium">
                   {project.description}
                 </div>
                 

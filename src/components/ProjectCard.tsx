@@ -42,10 +42,10 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
           </span>
           <ArrowRight size={18} className="text-slate-700 group-hover:text-violet-500 group-hover:translate-x-1 transition-all" />
         </div>
-        <h3 className="text-2xl font-bold text-white group-hover:text-gradient transition-all duration-300">
+        <h3 className="text-2xl font-bold text-white group-hover:text-gradient transition-all duration-300 tracking-tight">
           {project.title}
         </h3>
-        <p className="text-slate-400 text-sm line-clamp-2 leading-relaxed">
+        <p className="text-slate-300 text-sm line-clamp-2 leading-relaxed font-medium">
           {project.description}
         </p>
       </div>

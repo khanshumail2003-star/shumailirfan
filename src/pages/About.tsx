@@ -82,9 +82,9 @@ export default function About() {
               <span>The Designer's Story</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-white leading-tight tracking-tight">
-              Discipline, <span className="text-gradient">Faith</span>, and Creative Mastery
+              Discipline, <span className="text-gradient">Faith</span>, and <span className="text-violet-400">Creative Mastery</span>
             </h1>
-            <div className="prose prose-invert prose-lg text-slate-400 max-w-none space-y-6">
+            <div className="prose prose-invert prose-lg text-slate-300 max-w-none space-y-6 font-medium">
               <p>
                 I am Hafiz Muhammad Shumail, a professional graphic designer dedicated to the art of visual storytelling. My expertise lies in crafting high-impact logos, strategic brand identities, and engaging social media content that drives real-world results.
               </p>
@@ -129,9 +129,9 @@ export default function About() {
             <div className="absolute -bottom-10 -left-10 bg-slate-900/90 backdrop-blur-xl p-10 rounded-[2.5rem] shadow-2xl z-20 max-w-xs border border-slate-800">
               <div className="flex items-center space-x-4 mb-4 text-violet-400">
                 <Heart className="fill-current" />
-                <span className="font-bold text-white">Core Values</span>
+                <span className="font-bold text-white uppercase tracking-widest text-sm">Core Values</span>
               </div>
-              <p className="text-slate-400 italic leading-relaxed">
+              <p className="text-slate-300 italic leading-relaxed font-medium">
                 "I believe in the fusion of hard work, spiritual honesty, and creative innovation to deliver designs that resonate."
               </p>
             </div>
@@ -141,7 +141,7 @@ export default function About() {
         {/* Education Timeline */}
         <section className="mb-32">
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-black text-white mb-6">Academic & Professional Journey</h2>
+            <h2 className="text-5xl font-black text-white mb-6 tracking-tight">Academic & <span className="text-violet-400">Professional</span> Journey</h2>
             <div className="w-24 h-2 bg-gradient-to-r from-violet-600 to-amber-600 mx-auto rounded-full" />
           </div>
 
@@ -162,9 +162,9 @@ export default function About() {
                   <span className="text-xs font-black text-violet-400 uppercase tracking-[0.2em] bg-violet-500/10 px-3 py-1.5 rounded-full border border-violet-500/20">
                     {item.period}
                   </span>
-                  <h3 className="text-2xl font-bold text-white mt-4">{item.title}</h3>
+                  <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-violet-400 transition-colors">{item.title}</h3>
                   <p className="text-sm font-bold text-slate-500 mb-4 uppercase tracking-wider">{item.institution}</p>
-                  <p className="text-slate-400 leading-relaxed">{item.description}</p>
+                  <p className="text-slate-300 leading-relaxed font-medium">{item.description}</p>
                 </div>
               </motion.div>
             ))}
@@ -177,8 +177,8 @@ export default function About() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
             <div className="space-y-8">
-              <h2 className="text-5xl font-black mb-8 leading-tight">Technical <span className="text-gradient">Mastery</span> & Expertise</h2>
-              <p className="text-xl text-slate-400 leading-relaxed">
+              <h2 className="text-5xl font-black mb-8 leading-tight tracking-tight">Technical <span className="text-gradient">Mastery</span> & Expertise</h2>
+              <p className="text-xl text-slate-300 leading-relaxed font-medium">
                 I leverage industry-leading tools and strategic methodologies to ensure every design is not only beautiful but also functional and goal-oriented.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -59,13 +59,13 @@ export default function Projects() {
             animate={{ opacity: 1, y: 0 }}
             className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tight"
           >
-            Creative <span className="text-gradient">Masterpieces</span>
+            Creative <span className="text-gradient">Masterpieces</span> & <span className="text-violet-400">Visuals</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed"
+            className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium"
           >
             A curated collection of strategic designs, from iconic logo identities to high-conversion social media campaigns. Each project is a testament to visual storytelling and technical precision.
           </motion.p>

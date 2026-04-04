@@ -50,13 +50,13 @@ export default function Contact() {
             animate={{ opacity: 1, y: 0 }}
             className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tight"
           >
-            Start a <span className="text-gradient">Legendary</span> Project
+            Start a <span className="text-gradient">Legendary</span> <span className="text-violet-400">Project</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed"
+            className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium"
           >
             Ready to elevate your brand? Whether you need a strategic logo, a complete visual identity, or high-impact social media content, I'm here to bring your vision to life.
           </motion.p>
@@ -74,8 +74,8 @@ export default function Contact() {
                 <Mail size={32} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white mb-2">Email Me</h3>
-                <p className="text-slate-400 text-sm break-all font-medium">hafizmuhammadshumailirfan@gmail.com</p>
+                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-violet-400 transition-colors">Email Me</h3>
+                <p className="text-slate-300 text-sm break-all font-medium">hafizmuhammadshumailirfan@gmail.com</p>
               </div>
             </motion.div>
 
@@ -89,8 +89,8 @@ export default function Contact() {
                 <Phone size={32} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white mb-2">WhatsApp</h3>
-                <p className="text-slate-400 text-sm font-medium">+92 315 5431571</p>
+                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-green-400 transition-colors">WhatsApp</h3>
+                <p className="text-slate-300 text-sm font-medium">+92 315 5431571</p>
               </div>
             </motion.div>
 
@@ -104,8 +104,8 @@ export default function Contact() {
                 <MapPin size={32} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white mb-2">Location</h3>
-                <p className="text-slate-400 text-sm font-medium">Rahim Yar Khan, Pakistan</p>
+                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">Location</h3>
+                <p className="text-slate-300 text-sm font-medium">Rahim Yar Khan, Pakistan</p>
               </div>
             </motion.div>
           </div>
