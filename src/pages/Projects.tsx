@@ -23,7 +23,7 @@ export default function Projects() {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const projectsData = snapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data({ serverTimestamps: 'estimate' })
       })) as Project[];
       
       setProjects(projectsData);

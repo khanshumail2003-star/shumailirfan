@@ -1,43 +1,68 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
-
-const slides = [
-  {
-    image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=2071&auto=format&fit=crop',
-    title: 'Legendary Logo Identities',
-    subtitle: 'Crafting unique visual signatures for global brands.',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1974&auto=format&fit=crop',
-    title: 'Social Media Dominance',
-    subtitle: 'High-impact content designed for viral engagement.',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop',
-    title: 'Strategic Brand Stories',
-    subtitle: 'Transforming complex visions into visual narratives.',
-  },
-];
+import { ChevronLeft, ChevronRight, Sparkles, Loader2 } from 'lucide-react';
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase';
+import { Project } from '../types';
 
 export default function AutoSlider() {
+  const [projects, setProjects] = useState<Project[]>([]);
   const [current, setCurrent] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 6000);
-    return () => clearInterval(timer);
+    const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'), limit(5));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const projectsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data({ serverTimestamps: 'estimate' })
+      })) as Project[];
+      setProjects(projectsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching slider projects:", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const nextSlide = () => setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  const prevSlide = () => setCurrent((prev) => (prev === slides.length - 1 ? slides.length - 1 : prev - 1));
+  useEffect(() => {
+    if (projects.length === 0) return;
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev === projects.length - 1 ? 0 : prev + 1));
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [projects.length]);
+
+  const nextSlide = () => setCurrent((prev) => (prev === projects.length - 1 ? 0 : prev + 1));
+  const prevSlide = () => setCurrent((prev) => (prev === projects.length - 1 ? projects.length - 1 : prev - 1));
+
+  if (loading) {
+    return (
+      <div className="relative h-[650px] w-full flex items-center justify-center bg-slate-900/50 rounded-[4rem] border border-slate-800">
+        <Loader2 className="animate-spin text-violet-500" size={48} />
+      </div>
+    );
+  }
+
+  if (projects.length === 0) {
+    return (
+      <div className="relative h-[650px] w-full flex items-center justify-center bg-slate-900/50 rounded-[4rem] border border-slate-800 text-center p-8">
+        <div className="space-y-4">
+          <Sparkles size={48} className="text-slate-700 mx-auto" />
+          <h3 className="text-2xl font-bold text-white">No Masterpieces Yet</h3>
+          <p className="text-slate-400">Add your first project in the admin dashboard to see it here.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative h-[650px] w-full overflow-hidden rounded-[4rem] shadow-[0_0_100px_rgba(139,92,246,0.1)] border border-slate-800">
+    <div className="relative h-[650px] w-full overflow-hidden rounded-[4rem] shadow-[0_0_100px_rgba(139,92,246,0.1)] border border-slate-800 group">
       <AnimatePresence mode="wait">
         <motion.div
-          key={current}
+          key={projects[current].id}
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
@@ -46,8 +71,8 @@ export default function AutoSlider() {
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
           <img
-            src={slides[current].image}
-            alt={slides[current].title}
+            src={projects[current].imageUrl}
+            alt={projects[current].title}
             className="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
             referrerPolicy="no-referrer"
           />
@@ -67,15 +92,15 @@ export default function AutoSlider() {
               transition={{ delay: 0.6 }}
               className="text-5xl md:text-7xl font-black leading-tight tracking-tighter"
             >
-              {slides[current].title}
+              {projects[current].title}
             </motion.h2>
             <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.8 }}
-              className="text-xl text-slate-300 font-medium leading-relaxed"
+              className="text-xl text-slate-300 font-medium leading-relaxed line-clamp-2"
             >
-              {slides[current].subtitle}
+              {projects[current].description}
             </motion.p>
           </div>
         </motion.div>
@@ -99,7 +124,7 @@ export default function AutoSlider() {
 
       {/* Indicators */}
       <div className="absolute bottom-16 left-16 z-30 flex space-x-3">
-        {slides.map((_, idx) => (
+        {projects.map((_, idx) => (
           <button
             key={idx}
             onClick={() => setCurrent(idx)}
