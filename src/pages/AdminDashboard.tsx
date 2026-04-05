@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { collection, addDoc, serverTimestamp, onSnapshot, deleteDoc, doc, query, orderBy, getDocsFromServer, limit } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, onSnapshot, deleteDoc, doc, query, orderBy, getDocsFromServer, limit, updateDoc } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 import { Project } from '../types';
 import { Plus, Trash2, LogOut, LogIn, LayoutDashboard, Image as ImageIcon, Type, Tag, Loader2, CheckCircle2, AlertCircle, Upload, X, ShieldCheck } from 'lucide-react';
@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   
@@ -161,22 +162,33 @@ export default function AdminDashboard() {
     
     // Optimistically clear the form to make it feel instant
     const currentFormData = { ...formData };
+    const currentEditingId = editingId;
+    
     setFormData({ title: '', description: '', imageUrl: '', category: 'Logo' });
     setImagePreview(null);
+    setEditingId(null);
     
     try {
-      await addDoc(collection(db, 'projects'), {
-        ...currentFormData,
-        createdAt: serverTimestamp(),
-      });
+      if (currentEditingId) {
+        await updateDoc(doc(db, 'projects', currentEditingId), {
+          ...currentFormData,
+        });
+        console.log("Document updated successfully:", currentEditingId);
+      } else {
+        await addDoc(collection(db, 'projects'), {
+          ...currentFormData,
+          createdAt: serverTimestamp(),
+        });
+      }
       setStatus('success');
       setTimeout(() => setStatus('idle'), 3000);
     } catch (error: any) {
       // If it fails, restore the form data so the user doesn't lose their work
       setFormData(currentFormData);
       setImagePreview(currentFormData.imageUrl);
+      setEditingId(currentEditingId);
       
-      const errInfo = handleFirestoreError(error, 'create', 'projects');
+      const errInfo = handleFirestoreError(error, currentEditingId ? 'update' : 'create', 'projects');
       setStatus('error');
       
       let errorMessage = error.message || 'Unknown error';
@@ -190,6 +202,18 @@ export default function AdminDashboard() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleEdit = (project: Project) => {
+    setEditingId(project.id);
+    setFormData({
+      title: project.title,
+      description: project.description,
+      imageUrl: project.imageUrl,
+      category: project.category,
+    });
+    setImagePreview(project.imageUrl);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id: string) => {
@@ -313,8 +337,8 @@ export default function AdminDashboard() {
               className="bg-slate-900/50 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl border border-slate-800 sticky top-28"
             >
               <h2 className="text-xl font-bold text-white mb-6 flex items-center space-x-2 tracking-tight">
-                <Plus size={20} className="text-violet-400" />
-                <span>Add New <span className="text-violet-400">Project</span></span>
+                {editingId ? <ShieldCheck size={20} className="text-violet-400" /> : <Plus size={20} className="text-violet-400" />}
+                <span>{editingId ? 'Edit' : 'Add New'} <span className="text-violet-400">Project</span></span>
               </h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
@@ -393,14 +417,32 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-4 bg-violet-600 text-white rounded-xl font-bold hover:bg-violet-500 transition-all shadow-lg shadow-violet-600/20 flex items-center justify-center space-x-2 disabled:opacity-70"
-                >
-                  {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : <Plus size={20} />}
-                  <span>{isSubmitting ? 'Adding...' : 'Add Project'}</span>
-                </button>
+                <div className="flex gap-3">
+                  {editingId && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingId(null);
+                        setFormData({ title: '', description: '', imageUrl: '', category: 'Logo' });
+                        setImagePreview(null);
+                      }}
+                      className="flex-1 py-4 bg-slate-800 text-slate-300 rounded-xl font-bold hover:bg-slate-700 transition-all border border-slate-700"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={cn(
+                      "flex-[2] py-4 bg-violet-600 text-white rounded-xl font-bold hover:bg-violet-500 transition-all shadow-lg shadow-violet-600/20 flex items-center justify-center space-x-2 disabled:opacity-70",
+                      editingId && "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20"
+                    )}
+                  >
+                    {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : (editingId ? <CheckCircle2 size={20} /> : <Plus size={20} />)}
+                    <span>{isSubmitting ? (editingId ? 'Updating...' : 'Adding...') : (editingId ? 'Update Project' : 'Add Project')}</span>
+                  </button>
+                </div>
 
                 {status === 'success' && (
                   <div className="flex items-center space-x-2 text-green-400 bg-green-400/10 p-3 rounded-lg text-sm font-medium border border-green-400/20">
@@ -428,7 +470,13 @@ export default function AdminDashboard() {
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                      <button
+                        onClick={() => handleEdit(project)}
+                        className="p-3 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition-all shadow-xl transform translate-y-4 group-hover:translate-y-0"
+                      >
+                        <ShieldCheck size={20} />
+                      </button>
                       <button
                         onClick={() => handleDelete(project.id)}
                         className="p-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all shadow-xl transform translate-y-4 group-hover:translate-y-0"
