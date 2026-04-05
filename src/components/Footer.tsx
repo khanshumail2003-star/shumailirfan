@@ -106,7 +106,17 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-bold uppercase tracking-[0.2em]">
-          <p className="text-slate-500">&copy; {new Date().getFullYear()} Shumail Khan. All rights reserved.</p>
+          <div className="flex flex-col items-center md:items-start gap-2">
+            <p className="text-slate-500">&copy; {new Date().getFullYear()} Shumail Khan. All rights reserved.</p>
+            <a 
+              href="https://hananirfanportfolio.vercel.app" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-slate-600 hover:text-violet-400 transition-colors flex items-center"
+            >
+              Partner Portfolio <ArrowUpRight size={12} className="ml-1" />
+            </a>
+          </div>
           <div className="flex space-x-8 text-slate-600">
             <a href="#" className="hover:text-violet-400 transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-violet-400 transition-colors">Terms of Service</a>

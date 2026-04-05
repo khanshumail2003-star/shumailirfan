@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { collection, addDoc, serverTimestamp, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, onSnapshot, deleteDoc, doc, query, orderBy, getDocsFromServer, limit } from 'firebase/firestore';
+import firebaseConfig from '../../firebase-applet-config.json';
 import { Project } from '../types';
-import { Plus, Trash2, LogOut, LogIn, LayoutDashboard, Image as ImageIcon, Type, Tag, Loader2, CheckCircle2, AlertCircle, Upload, X } from 'lucide-react';
+import { Plus, Trash2, LogOut, LogIn, LayoutDashboard, Image as ImageIcon, Type, Tag, Loader2, CheckCircle2, AlertCircle, Upload, X, ShieldCheck } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,76 +28,165 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    let unsubscribeProjects: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
-      if (currentUser && ADMIN_EMAILS.includes(currentUser.email || '')) {
-        fetchProjects();
+      
+      if (currentUser && ADMIN_EMAILS.map(e => e.toLowerCase()).includes(currentUser.email?.toLowerCase() || '')) {
+        // Set up real-time listener for projects
+        const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
+        unsubscribeProjects = onSnapshot(q, (snapshot) => {
+          const projectsData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          })) as Project[];
+          setProjects(projectsData);
+        }, (error) => {
+          handleFirestoreError(error, 'list', 'projects');
+        });
+      } else {
+        if (unsubscribeProjects) {
+          unsubscribeProjects();
+          unsubscribeProjects = null;
+        }
+        setProjects([]);
       }
     });
-    return () => unsubscribe();
-  }, []);
 
-  const fetchProjects = async () => {
-    try {
-      const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
-      const querySnapshot = await getDocs(q);
-      const projectsData = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Project[];
-      setProjects(projectsData);
-    } catch (error) {
-      console.error("Error fetching projects:", error);
-    }
-  };
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeProjects) unsubscribeProjects();
+    };
+  }, []);
 
   const handleLogout = () => signOut(auth);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1024 * 1024) {
-        alert("Image size must be less than 1MB");
-        return;
-      }
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setImagePreview(base64String);
-        setFormData(prev => ({ ...prev, imageUrl: base64String }));
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Max dimension 800px for significantly faster upload
+          const MAX_DIM = 800;
+          if (width > height) {
+            if (width > MAX_DIM) {
+              height *= MAX_DIM / width;
+              width = MAX_DIM;
+            }
+          } else {
+            if (height > MAX_DIM) {
+              width *= MAX_DIM / height;
+              height = MAX_DIM;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Compress to JPEG with 0.5 quality for maximum speed
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5);
+          setImagePreview(compressedBase64);
+          setFormData(prev => ({ ...prev, imageUrl: compressedBase64 }));
+          console.log("Image processed and compressed", { 
+            originalSize: file.size, 
+            compressedSize: Math.round(compressedBase64.length * 0.75) 
+          });
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const handleFirestoreError = (error: any, operationType: string, path: string | null) => {
+    const errInfo = {
+      error: error instanceof Error ? error.message : String(error),
+      authInfo: {
+        userId: auth.currentUser?.uid,
+        email: auth.currentUser?.email,
+        emailVerified: auth.currentUser?.emailVerified,
+        isAnonymous: auth.currentUser?.isAnonymous,
+        tenantId: auth.currentUser?.tenantId,
+        providerInfo: auth.currentUser?.providerData.map(provider => ({
+          providerId: provider.providerId,
+          displayName: provider.displayName,
+          email: provider.email,
+          photoUrl: provider.photoURL
+        })) || []
+      },
+      operationType,
+      path
+    };
+    console.error('Firestore Error: ', JSON.stringify(errInfo));
+    return errInfo;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !ADMIN_EMAILS.includes(user.email || '')) {
-      alert("Unauthorized access");
+    console.log("Submit clicked", { 
+      user: user?.email, 
+      formData: { 
+        ...formData, 
+        imageUrl: formData.imageUrl ? `present (${Math.round(formData.imageUrl.length * 0.75 / 1024)} KB)` : 'missing' 
+      } 
+    });
+    
+    if (!user || !ADMIN_EMAILS.map(e => e.toLowerCase()).includes(user.email?.toLowerCase() || '')) {
+      alert("Unauthorized access. Please sign in with an admin account.");
       return;
     }
+    
     if (!formData.imageUrl) {
-      alert("Please upload an image");
+      alert("Please upload an image first");
+      return;
+    }
+
+    if (formData.imageUrl.length > 1000000) {
+      alert("The image is still too large for the database. Please try a smaller image or a different format.");
       return;
     }
 
     setIsSubmitting(true);
     setStatus('idle');
+    
+    // Optimistically clear the form to make it feel instant
+    const currentFormData = { ...formData };
+    setFormData({ title: '', description: '', imageUrl: '', category: 'Logo' });
+    setImagePreview(null);
+    
     try {
       await addDoc(collection(db, 'projects'), {
-        ...formData,
+        ...currentFormData,
         createdAt: serverTimestamp(),
       });
-      setFormData({ title: '', description: '', imageUrl: '', category: 'Logo' });
-      setImagePreview(null);
       setStatus('success');
-      fetchProjects();
-      setTimeout(() => setStatus('idle'), 5000);
+      setTimeout(() => setStatus('idle'), 3000);
     } catch (error: any) {
-      console.error("Error adding project:", error);
+      // If it fails, restore the form data so the user doesn't lose their work
+      setFormData(currentFormData);
+      setImagePreview(currentFormData.imageUrl);
+      
+      const errInfo = handleFirestoreError(error, 'create', 'projects');
       setStatus('error');
-      alert(`Failed to add project: ${error.message || 'Unknown error'}`);
+      
+      let errorMessage = error.message || 'Unknown error';
+      if (errorMessage.includes('permission-denied')) {
+        errorMessage = "Permission denied. This usually means the security rules are blocking the write. Ensure you are signed in with the correct admin email and it is verified.";
+      } else if (errorMessage.includes('quota-exceeded')) {
+        errorMessage = "Database quota exceeded. Please try again later.";
+      }
+      
+      alert(`Failed to add project: ${errorMessage}\n\nDebug Info: ${JSON.stringify(errInfo.authInfo)}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -106,9 +196,40 @@ export default function AdminDashboard() {
     if (!window.confirm('Are you sure you want to delete this project?')) return;
     try {
       await deleteDoc(doc(db, 'projects', id));
-      fetchProjects();
-    } catch (error) {
+      // No need to call fetchProjects() due to onSnapshot
+    } catch (error: any) {
+      handleFirestoreError(error, 'delete', `projects/${id}`);
       console.error("Error deleting project:", error);
+    }
+  };
+
+  const testConnection = async () => {
+    try {
+      console.log("Testing Firestore connection...");
+      console.log("Current Config:", {
+        projectId: firebaseConfig.projectId,
+        databaseId: firebaseConfig.firestoreDatabaseId,
+        authDomain: firebaseConfig.authDomain
+      });
+      
+      const testRef = collection(db, 'projects');
+      // Use getDocsFromServer to bypass cache and check real connectivity
+      const snapshot = await getDocsFromServer(query(testRef, limit(1)));
+      
+      console.log("Connection test successful. Snapshot empty?", snapshot.empty);
+      alert(`Connection successful! Database is reachable. Found ${snapshot.size} projects in initial check.`);
+    } catch (error: any) {
+      const errInfo = handleFirestoreError(error, 'get', 'projects');
+      console.error("Connection test failed:", error);
+      
+      let extraMsg = "";
+      if (error.message?.includes('offline')) {
+        extraMsg = "\n\nDevice appears to be offline or Firebase is blocked.";
+      } else if (error.message?.includes('permission-denied')) {
+        extraMsg = "\n\nPermission denied. This might be a rules issue or the database ID is incorrect.";
+      }
+      
+      alert(`Connection failed: ${error.message}${extraMsg}\n\nAuth: ${errInfo.authInfo.email || 'Not logged in'}\nDB ID: ${firebaseConfig.firestoreDatabaseId}`);
     }
   };
 
@@ -120,7 +241,7 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!user || !ADMIN_EMAILS.includes(user.email || '')) {
+  if (!user || !ADMIN_EMAILS.map(e => e.toLowerCase()).includes(user.email?.toLowerCase() || '')) {
     return (
       <div className="pt-32 pb-20 min-h-screen bg-black flex items-center justify-center p-4 bg-dark-gradient">
         <motion.div
@@ -160,13 +281,27 @@ export default function AdminDashboard() {
               <p className="text-slate-300 text-sm font-medium">Welcome back, <span className="text-violet-400">Shumail Irfan</span></p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="px-6 py-3 bg-slate-900 text-slate-300 border border-slate-800 rounded-2xl font-bold hover:bg-slate-800 transition-all flex items-center space-x-2"
-          >
-            <LogOut size={20} />
-            <span>Sign Out</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="px-4 py-2 bg-slate-900/50 border border-slate-800 rounded-xl text-[10px] font-mono text-slate-500">
+              <p>User: {user?.email || 'N/A'}</p>
+              <p>UID: {user?.uid?.slice(0, 8)}...</p>
+              <p>DB: {firebaseConfig.firestoreDatabaseId?.slice(0, 8)}...</p>
+            </div>
+            <button
+              onClick={testConnection}
+              className="px-6 py-3 bg-slate-900 text-violet-400 border border-slate-800 rounded-2xl font-bold hover:bg-slate-800 transition-all flex items-center space-x-2"
+            >
+              <ShieldCheck size={20} />
+              <span>Test Connection</span>
+            </button>
+            <button
+              onClick={handleLogout}
+              className="px-6 py-3 bg-slate-900 text-slate-300 border border-slate-800 rounded-2xl font-bold hover:bg-slate-800 transition-all flex items-center space-x-2"
+            >
+              <LogOut size={20} />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -222,7 +357,7 @@ export default function AdminDashboard() {
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                           <Upload className="w-8 h-8 text-slate-500 mb-2 group-hover/upload:text-violet-400 transition-colors" />
                           <p className="text-sm text-slate-400 font-medium">Click to upload image</p>
-                          <p className="text-xs text-slate-600 mt-1">Max size: 1MB</p>
+                          <p className="text-xs text-slate-600 mt-1 italic">Note: Large images may fail due to database limits</p>
                         </div>
                         <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                       </label>
