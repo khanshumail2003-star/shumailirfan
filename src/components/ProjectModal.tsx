@@ -10,6 +10,7 @@ interface ProjectModalProps {
 }
 
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
+  console.log('ProjectModal rendering with project:', project?.title);
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
 
@@ -43,13 +44,14 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   };
 
   const handleInquire = () => {
-    onClose();
+    console.log('Inquire clicked for project:', project.title);
     navigate('/contact', { 
       state: { 
         subject: `Inquiry: ${project.title}`,
         message: `I'm interested in learning more about the "${project.title}" project.`
       } 
     });
+    onClose();
   };
 
   return (

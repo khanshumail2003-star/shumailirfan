@@ -6,6 +6,7 @@ import { db } from '../firebase';
 import { useLocation } from 'react-router-dom';
 
 export default function Contact() {
+  console.log('Contact component rendering');
   const location = useLocation();
   const [formData, setFormData] = useState({
     name: '',
@@ -15,6 +16,7 @@ export default function Contact() {
   });
 
   useEffect(() => {
+    console.log('Contact page location state:', location.state);
     if (location.state) {
       setFormData(prev => ({
         ...prev,
