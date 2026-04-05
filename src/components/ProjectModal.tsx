@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Calendar, Tag, Share2, Download, CheckCircle2 } from 'lucide-react';
+import { X, Calendar, Tag, Share2, MessageSquare, CheckCircle2 } from 'lucide-react';
 import { Project } from '../types';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface ProjectModalProps {
   project: Project | null;
@@ -10,14 +11,16 @@ interface ProjectModalProps {
 
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
 
   if (!project) return null;
 
   const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/projects?project=${project.id}`;
     const shareData = {
       title: `Project: ${project.title}`,
       text: project.description,
-      url: window.location.href,
+      url: shareUrl,
     };
 
     if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
@@ -30,13 +33,23 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
     } else {
       // Fallback: Copy to clipboard
       try {
-        await navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(shareUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
         console.error('Failed to copy link:', err);
       }
     }
+  };
+
+  const handleInquire = () => {
+    onClose();
+    navigate('/contact', { 
+      state: { 
+        subject: `Inquiry: ${project.title}`,
+        message: `I'm interested in learning more about the "${project.title}" project.`
+      } 
+    });
   };
 
   return (
@@ -107,8 +120,11 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                       </>
                     )}
                   </button>
-                  <button className="flex items-center space-x-2 px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-2xl transition-all font-bold text-sm shadow-lg shadow-violet-600/20">
-                    <Download size={18} />
+                  <button 
+                    onClick={handleInquire}
+                    className="flex items-center space-x-2 px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-2xl transition-all font-bold text-sm shadow-lg shadow-violet-600/20"
+                  >
+                    <MessageSquare size={18} />
                     <span>Inquire Now</span>
                   </button>
                 </div>

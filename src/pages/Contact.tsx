@@ -1,16 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, Loader2, MessageSquare } from 'lucide-react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
+import { useLocation } from 'react-router-dom';
 
 export default function Contact() {
+  const location = useLocation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: '',
   });
+
+  useEffect(() => {
+    if (location.state) {
+      setFormData(prev => ({
+        ...prev,
+        subject: location.state.subject || prev.subject,
+        message: location.state.message || prev.message,
+      }));
+    }
+  }, [location.state]);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 

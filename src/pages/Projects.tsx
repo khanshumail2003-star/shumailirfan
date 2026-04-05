@@ -6,10 +6,12 @@ import { Project } from '../types';
 import ProjectCard from '../components/ProjectCard';
 import ProjectModal from '../components/ProjectModal';
 import { Search, Filter, Loader2, Sparkles } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 const categories = ['All', 'Logo', 'Social Media', 'Business Card', 'Branding'];
 
 export default function Projects() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -26,13 +28,27 @@ export default function Projects() {
       
       setProjects(projectsData);
       setLoading(false);
+
+      // Check for project ID in query params
+      const projectId = searchParams.get('project');
+      if (projectId) {
+        const project = projectsData.find(p => p.id === projectId);
+        if (project) {
+          setSelectedProject(project);
+        }
+      }
     }, (error) => {
       console.error("Error fetching projects:", error);
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [searchParams]);
+
+  const handleCloseModal = () => {
+    setSelectedProject(null);
+    setSearchParams({});
+  };
 
   const filteredProjects = projects.filter(project => {
     const matchesCategory = selectedCategory === 'All' || project.category === selectedCategory;
@@ -121,7 +137,10 @@ export default function Projects() {
                   <ProjectCard
                     key={project.id}
                     project={project}
-                    onClick={setSelectedProject}
+                    onClick={(p) => {
+                      setSelectedProject(p);
+                      setSearchParams({ project: p.id });
+                    }}
                   />
                 ))}
               </AnimatePresence>
@@ -143,7 +162,7 @@ export default function Projects() {
       {/* Project Detail Modal */}
       <ProjectModal
         project={selectedProject}
-        onClose={() => setSelectedProject(null)}
+        onClose={handleCloseModal}
       />
     </div>
   );
