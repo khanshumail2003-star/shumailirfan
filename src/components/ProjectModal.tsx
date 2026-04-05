@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Calendar, Tag, Share2, Download } from 'lucide-react';
+import { X, Calendar, Tag, Share2, Download, CheckCircle2 } from 'lucide-react';
 import { Project } from '../types';
+import { useState } from 'react';
 
 interface ProjectModalProps {
   project: Project | null;
@@ -8,7 +9,35 @@ interface ProjectModalProps {
 }
 
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
+  const [copied, setCopied] = useState(false);
+
   if (!project) return null;
+
+  const handleShare = async () => {
+    const shareData = {
+      title: `Project: ${project.title}`,
+      text: project.description,
+      url: window.location.href,
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+        console.log('Project shared successfully');
+      } catch (err) {
+        console.error('Error sharing project:', err);
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy link:', err);
+      }
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -62,9 +91,21 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                 </div>
                 
                 <div className="flex flex-wrap gap-4 pt-4">
-                  <button className="flex items-center space-x-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl transition-all font-bold text-sm border border-slate-700">
-                    <Share2 size={18} />
-                    <span>Share Project</span>
+                  <button 
+                    onClick={handleShare}
+                    className="flex items-center space-x-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl transition-all font-bold text-sm border border-slate-700 relative overflow-hidden"
+                  >
+                    {copied ? (
+                      <>
+                        <CheckCircle2 size={18} className="text-green-400" />
+                        <span className="text-green-400">Link Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Share2 size={18} />
+                        <span>Share Project</span>
+                      </>
+                    )}
                   </button>
                   <button className="flex items-center space-x-2 px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-2xl transition-all font-bold text-sm shadow-lg shadow-violet-600/20">
                     <Download size={18} />
